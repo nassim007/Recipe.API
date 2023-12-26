@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Recipe.API.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<MyDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext") ?? throw new InvalidOperationException("Connection string 'MyDbContext' not found.")));
 
 // Add services to the container.
 
@@ -19,6 +24,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Voeg seeding logica toe
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    SeedDataInitializer.Initialize(serviceProvider);
+}
 
 app.MapControllers();
 
