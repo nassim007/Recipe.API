@@ -98,5 +98,52 @@ namespace Recipe.API
 
             return Ok(recipe);
         }
+        // Voeg toe aan RecipeController.cs
+
+        // Endpoint: /api/recipe/search
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<RecipesBasic>>> Search([FromQuery] RecipeSearchOptions options)
+        {
+            var query = _context.Recipes.AsQueryable();
+
+            // Filter op zoekterm
+            if (!string.IsNullOrEmpty(options.SearchTerm))
+            {
+                query = query.Where(r => r.Title.Contains(options.SearchTerm));
+            }
+
+            // Filter op categorieën
+            if (options.Categories != null && options.Categories.Any())
+            {
+                query = query.Where(r => options.Categories.Contains(r.CategoryId));
+            }
+
+            // Filter op maximale moeilijkheidsgraad
+            if (options.MaxDifficulty.HasValue)
+            {
+                query = query.Where(r => (int)r.Difficulty <= options.MaxDifficulty);
+            }
+
+            // Filter op maximale bereidingstijd
+            if (options.MaxTime.HasValue)
+            {
+                query = query.Where(r => r.Time <= options.MaxTime);
+            }
+
+            var result = await query
+                .Select(r => new RecipesBasic
+                {
+                    Id = r.Id,
+                    Title = r.Title,
+                    Time = r.Time,
+                    Category = r.Category.Name,
+                    Difficulty = r.Difficulty
+                })
+                .ToListAsync();
+
+            return Ok(result);
+        }
+
     }
+
 }

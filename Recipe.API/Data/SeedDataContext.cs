@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Recipe.API.Models;
+using System;
 
 namespace Recipe.API.Data
 {
@@ -21,6 +20,35 @@ namespace Recipe.API.Data
                         new Categories { Name = "Voorgerecht" },
                         new Categories { Name = "Hoofdgerecht" },
                         new Categories { Name = "Dessert" }
+                    );
+
+                    context.SaveChanges();
+                }
+
+                if (!context.SignUpModels.Any())
+                {
+                    // Voeg gebruikersgegevens toe
+                    context.SignUpModels.AddRange(
+                        new SignUpModel
+                        {
+                            FirstName = "User",
+                            LastName = "User2",
+                            Username = "User",
+                            Email = "user@example.com",
+                            Password = "1234",
+                            ConfirmPassword = "1234",
+                            IsAdmin = false
+                        },
+                        new SignUpModel
+                        {
+                            FirstName = "Admin",
+                            LastName = "Admin",
+                            Username = "Admin",
+                            Email = "Admin@example.com",
+                            Password = "1234",
+                            ConfirmPassword = "1234",
+                            IsAdmin = true
+                        }
                     );
 
                     context.SaveChanges();
