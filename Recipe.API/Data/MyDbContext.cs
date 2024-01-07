@@ -21,6 +21,8 @@ namespace Recipe.API.Data
 
         public DbSet<SignUpModel> SignUpModels { get; set; }
 
+        public DbSet<SignInModel> SignInModels { get; set; }
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
